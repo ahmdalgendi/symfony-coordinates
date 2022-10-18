@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Responses\GeocoderResponses\GoogleMapsGeocoderResponseHandler;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 use GuzzleHttp\Client;
@@ -20,8 +21,20 @@ class GoogleMapsGeocoder implements GeocoderInterface
 	 */
 	public function geocode(Address $address): ?Coordinates
 	{
+		$params = $this->getParams($address);
+		$data = $this->getGoogleGeocodeResponse($params);
+
+		return GoogleMapsGeocoderResponseHandler::handleResponse($data);
+	}
+
+	/**
+	 * @param Address $address
+	 * @return array[]
+	 */
+	public function getParams(Address $address): array
+	{
 		$apiKey = $_ENV["GOOGLE_GEOCODING_API_KEY"];
-		$params = [
+		return [
 				'query' => [
 						'address' => $address->getStreet(),
 						'components' => implode('|', [
@@ -32,24 +45,21 @@ class GoogleMapsGeocoder implements GeocoderInterface
 						'key' => $apiKey,
 				],
 		];
+	}
+
+	/**
+	 * @param array $params
+	 * @return mixed
+	 * @throws GuzzleException
+	 * @throws JsonException
+	 */
+	public function getGoogleGeocodeResponse(array $params)
+	{
 		$client = new Client();
 
 		$response = $client->get(self::HTTPS_MAPS_GOOGLEAPIS_COM_MAPS_API_GEOCODE_JSON, $params);
 
 		$data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-		if (count($data['results']) === 0) {
-			return null;
-		}
-
-		$firstResult = $data['results'][0];
-
-		if ($firstResult['geometry']['location_type'] !== 'ROOFTOP') {
-			return null;
-		}
-
-		return new Coordinates(
-				$firstResult['geometry']['location']['lat'],
-				$firstResult['geometry']['location']['lng']
-		);
+		return $data;
 	}
 }
