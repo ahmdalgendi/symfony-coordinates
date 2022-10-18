@@ -8,7 +8,7 @@ use App\ValueObject\Coordinates;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class HereMapsGeoCoder implements GeocoderInterface
+class HereMapsGeoCoderStrategy implements GeocoderInterface
 {
 	public function __construct()
 	{
