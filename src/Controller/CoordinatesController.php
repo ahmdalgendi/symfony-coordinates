@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\ResolvedAddressRepository;
-use App\Service\GeocoderInterface;
+use App\Service\Strategies\GeocoderInterface;
+use App\Service\Strategies\HereMapsGeoCoder;
 use App\ValueObject\Address;
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,15 +38,15 @@ class CoordinatesController extends AbstractController
 
         $address = new Address($country, $city, $street, $postcode);
 
-        $row = $repository->getByAddress($address);
-
+//        $row = $repository->getByAddress($address);
+		$this->geocoder = new HereMapsGeoCoder();
         $coordinates = $this->geocoder->geocode($address);
 
         if (null === $coordinates) {
             return new JsonResponse([]);
         }
 
-        $repository->saveResolvedAddress($address, $coordinates);
+//        $repository->saveResolvedAddress($address, $coordinates);
 
         return new JsonResponse(['lat' => $coordinates->getLat(), 'lng' => $coordinates->getLng()]);
     }

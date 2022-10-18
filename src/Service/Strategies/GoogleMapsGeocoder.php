@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Strategies;
 
 use App\Responses\GeocoderResponses\GoogleMapsGeocoderResponseHandler;
 use App\ValueObject\Address;
