@@ -12,7 +12,7 @@ use App\ValueObject\Coordinates;
 
 class GeocoderChainService
 {
-	protected GeocoderContext $geocoderService;
+	protected GeocoderContext $geocoderContext;
 	protected array $handlers = [
 			DatabaseHandler::class,
 			GoogleMapsGeocoderHandler::class,
@@ -21,7 +21,7 @@ class GeocoderChainService
 
 	public function __construct(GeocoderContext $geocoderContext)
 	{
-		$this->geocoderService = $geocoderContext;
+		$this->geocoderContext = $geocoderContext;
 	}
 
 	public function geocode(Address $address): ?Coordinates
@@ -35,10 +35,14 @@ class GeocoderChainService
 			throw new \RuntimeException('No handlers found');
 		}
 		$handlers = [];
-		$firsHandler = new $this->handlers[0]($this->geocoderService);
+		$firsHandler = new $this->handlers[0]($this->geocoderContext);
 		$handlers[] = $firsHandler;
 		for ($i = 1, $iMax = count($this->handlers); $i < $iMax; $i++) {
-			$handler = new $this->handlers[$i]($this->geocoderService);
+			// check that I am extending AbstractGeocoderHandler
+			if(!is_subclass_of($this->handlers[$i], AbstractGeocoderHandler::class)) {
+				throw new \RuntimeException('Handler must extend AbstractGeocoderHandler');
+			}
+			$handler = new $this->handlers[$i]($this->geocoderContext);
 			$handlers[$i - 1]->setNextHandler($handler);
 			$handlers[] = $handler;
 		}

@@ -8,11 +8,11 @@ use App\ValueObject\Coordinates;
 
 abstract class AbstractGeocoderHandler
 {
-	protected GeocoderContext $geocoderService;
+	protected GeocoderContext $geocoderContext;
 
 	public function __construct(GeocoderContext $geocoderService)
 	{
-		$this->geocoderService = $geocoderService;
+		$this->geocoderContext = $geocoderService;
 	}
 
 	protected ?AbstractGeocoderHandler $nextHandler = null;
@@ -26,9 +26,14 @@ abstract class AbstractGeocoderHandler
 
 	public function handle(Address $address): ?Coordinates
 	{
-		if (null !== $this->nextHandler) {
+		if ($this->nextHandler) {
 			return $this->nextHandler->handle($address);
 		}
 		return null;
+	}
+
+	public function saveResolvedAddress(Address $address, Coordinates $coordinates): void
+	{
+		$this->geocoderContext->resolvedAddressRepository->saveResolvedAddress($address, $coordinates);
 	}
 }

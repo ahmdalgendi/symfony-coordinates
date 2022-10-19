@@ -13,7 +13,7 @@ class DatabaseHandler extends AbstractGeocoderHandler
 
 	public function handle(Address $address): ?Coordinates
 	{
-		$this->databaseGeocoderStrategy = new DatabaseGeocoderStrategyStrategy($this->geocoderService->resolvedAddressRepository);
+		$this->databaseGeocoderStrategy = new DatabaseGeocoderStrategyStrategy($this->geocoderContext->resolvedAddressRepository);
 		$result = $this->databaseGeocoderStrategy->geocode($address);
 		return $result ?? parent::handle($address);
 	}
