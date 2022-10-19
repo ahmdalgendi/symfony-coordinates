@@ -7,7 +7,7 @@ namespace App\Service\Strategies;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 
-interface GeocoderInterface
+interface GeocoderStrategyInterface
 {
     public function geocode(Address $address): ?Coordinates;
 }

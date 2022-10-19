@@ -1,25 +1,27 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Service;
 
-use App\Service\Strategies\GeocoderInterface;
+use App\Repository\ResolvedAddressRepository;
+use App\Service\GeocoderChain\GeocoderChainService;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 
 class GeocoderService
 {
-	private GeocoderInterface $geocoder;
+	protected GeocoderChainService $geocoderChainService;
+	private ResolvedAddressRepository $resolvedAddressRepository;
 
+	public function __construct(GeocoderChainService $geocoderChainService, ResolvedAddressRepository $resolvedAddressRepository)
+	{
+		$this->geocoderChainService = $geocoderChainService;
+		$this->resolvedAddressRepository = $resolvedAddressRepository;
+	}
 
 	public function geocode(Address $address): ?Coordinates
 	{
-		return $this->geocoder->geocode($address);
-	}
-
-	public function setGeocoder(GeocoderInterface $geocoder): void
-	{
-		$this->geocoder = $geocoder;
+		$coordinates = $this->geocoderChainService->geocode($address);
+		$this->resolvedAddressRepository->saveResolvedAddress($address, $coordinates);
+		return $coordinates;
 	}
 }

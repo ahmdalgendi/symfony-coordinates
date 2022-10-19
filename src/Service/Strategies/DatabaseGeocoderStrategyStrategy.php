@@ -6,7 +6,7 @@ use App\Repository\ResolvedAddressRepository;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 
-class DatabaseGeocoderStrategy implements GeocoderInterface
+class DatabaseGeocoderStrategyStrategy implements GeocoderStrategyInterface
 {
 	private ResolvedAddressRepository $resolvedAddressRepository;
 	public function __construct(ResolvedAddressRepository $resolvedAddressRepository)

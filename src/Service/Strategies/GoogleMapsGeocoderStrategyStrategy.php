@@ -11,7 +11,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
-class GoogleMapsGeocoderStrategy implements GeocoderInterface
+class GoogleMapsGeocoderStrategyStrategy implements GeocoderStrategyInterface
 {
 	public const HTTPS_MAPS_GOOGLEAPIS_COM_MAPS_API_GEOCODE_JSON = 'https://maps.googleapis.com/maps/api/geocode/json';
 
