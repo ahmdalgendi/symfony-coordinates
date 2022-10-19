@@ -21,7 +21,7 @@ class ResolvedAddress
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=3)
+     * @ORM\Column(type="string", length=100)
      */
     private $countryCode;
 
