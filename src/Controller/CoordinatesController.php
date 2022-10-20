@@ -38,7 +38,7 @@ class CoordinatesController extends AbstractController
 		$address = new Address($country, $city, $street, $postcode);
 		$coordinates = $service->geocode($address);
 		if (null === $coordinates) {
-			return new JsonResponse(['error' => 'No coordinates found'], Response::HTTP_NOT_FOUND);
+			return new JsonResponse([]);
 		}
 		return new JsonResponse(['lat' => $coordinates->getLat(), 'lng' => $coordinates->getLng()]);
     }
@@ -59,7 +59,7 @@ class CoordinatesController extends AbstractController
 	    $this->geocoderService->setGeocoder(new GoogleMapsGeocoderStrategyStrategy());
 	    $coordinates = $this->geocoderService->geocode($address);
 		if (null === $coordinates) {
-			return new JsonResponse(['error' => 'No coordinates found'], Response::HTTP_NOT_FOUND);
+			return new JsonResponse([]);
 		}
 		return new JsonResponse(['lat' => $coordinates->getLat(), 'lng' => $coordinates->getLng()]);
     }
@@ -79,7 +79,7 @@ class CoordinatesController extends AbstractController
 		$this->geocoderService->setGeocoder(new HereMapsGeoCoderStrategy());
 		$coordinates = $this->geocoderService->geocode($address);
 		if (null === $coordinates) {
-			return new JsonResponse(['error' => 'No coordinates found'], Response::HTTP_NOT_FOUND);
+			return new JsonResponse([]);
 		}
 		return new JsonResponse(['lat' => $coordinates->getLat(), 'lng' => $coordinates->getLng()]);
     }
