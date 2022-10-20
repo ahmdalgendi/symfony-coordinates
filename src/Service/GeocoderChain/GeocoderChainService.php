@@ -27,9 +27,9 @@ class GeocoderChainService
 	public function geocode(Address $address): ?Coordinates
 	{
 		$coordinates = $this->createChainOfResponsibility()->handle($address);
-
-		$this->geocoderContext->resolvedAddressRepository->saveResolvedAddress($address, $coordinates);
-
+		if ($coordinates === null) {
+			$this->geocoderContext->resolvedAddressRepository->saveResolvedAddress($address, $coordinates);
+		}
 		return $coordinates;
 	}
 

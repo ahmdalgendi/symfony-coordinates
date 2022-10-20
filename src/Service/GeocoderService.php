@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Repository\ResolvedAddressRepository;
 use App\Service\GeocoderChain\GeocoderChainService;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
@@ -18,6 +17,7 @@ class GeocoderService
 
 	public function geocode(Address $address): ?Coordinates
 	{
-		return $this->geocoderChainService->geocode($address);
+		$coordinates = $this->geocoderChainService->geocode($address);
+		return $coordinates && $coordinates->isValid() ? $coordinates : null;
 	}
 }

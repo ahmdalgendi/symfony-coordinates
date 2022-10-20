@@ -13,6 +13,9 @@ class HereMapsGeocoderHandler extends AbstractGeocoderHandler
 	{
 		$this->geocoderContext->setGeocoder(new HereMapsGeoCoderStrategy());
 		$result = $this->geocoderContext->geocode($address);
+		if ($result) {
+			$this->geocoderContext->resolvedAddressRepository->saveResolvedAddress($address, $result);
+		}
 		return $result ?? parent::handle($address);
 	}
 
