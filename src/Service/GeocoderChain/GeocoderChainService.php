@@ -52,4 +52,15 @@ class GeocoderChainService
 		}
 		return $firsHandler;
 	}
+
+	public function addHandler(string $handler): void
+	{
+		//check if the class name extends AbstractGeocoderHandler
+		if(!is_subclass_of($handler, AbstractGeocoderHandler::class)) {
+			throw new \RuntimeException('Handler must extend AbstractGeocoderHandler');
+		}
+		if (!in_array($handler, $this->handlers, true)) {
+			$this->handlers[] = $handler;
+		}
+	}
 }
