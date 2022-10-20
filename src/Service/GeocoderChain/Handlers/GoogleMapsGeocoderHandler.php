@@ -13,10 +13,6 @@ class GoogleMapsGeocoderHandler extends AbstractGeocoderHandler
 	{
 		$this->geocoderContext->setGeocoder(new GoogleMapsGeocoderStrategyStrategy());
 		$result = $this->geocoderContext->geocode($address);
-		if ($result) {
-			$this->saveResolvedAddress($address, $result);
-			return $result;
-		}
-		return parent::handle($address);
+		return $result ?? parent::handle($address);
 	}
 }

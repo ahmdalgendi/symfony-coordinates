@@ -17,9 +17,14 @@ class DatabaseGeocoderStrategyStrategy implements GeocoderStrategyInterface
 	public function geocode(Address $address): ?Coordinates
 	{
 		$coordinates = $this->resolvedAddressRepository->getByAddress($address);
-		if (null === $coordinates) {
+		if (
+				null === $coordinates ||
+				null === $coordinates->getLat() ||
+				null === $coordinates->getLng()
+		) {
 			return null;
 		}
+
 		return new Coordinates($coordinates->getLat(), $coordinates->getLng());
 	}
 }

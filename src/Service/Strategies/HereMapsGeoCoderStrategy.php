@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HereMapsGeoCoderStrategy implements GeocoderStrategyInterface
 {
+	const HTTPS_GEOCODE_SEARCH_HEREAPI_COM_V_1_GEOCODE = 'https://geocode.search.hereapi.com/v1/geocode';
+
 	public function __construct()
 	{
 	}
@@ -28,7 +30,7 @@ class HereMapsGeoCoderStrategy implements GeocoderStrategyInterface
 
 		$client = new Client();
 
-		$response = $client->get('https://geocode.search.hereapi.com/v1/geocode', $params);
+		$response = $client->get(self::HTTPS_GEOCODE_SEARCH_HEREAPI_COM_V_1_GEOCODE, $params);
 
 		$data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 

@@ -26,7 +26,11 @@ class GeocoderChainService
 
 	public function geocode(Address $address): ?Coordinates
 	{
-		return $this->createChainOfResponsibility()->handle($address);
+		$coordinates = $this->createChainOfResponsibility()->handle($address);
+
+		$this->geocoderContext->resolvedAddressRepository->saveResolvedAddress($address, $coordinates);
+
+		return $coordinates;
 	}
 
 	private function createChainOfResponsibility(): AbstractGeocoderHandler
