@@ -28,3 +28,9 @@ I created a chain and a handler for each strategy then added the handlers in the
 2. create a response handler class that implements the GeocodeResponseHandler interface
 3. create a new chain handler class that extends the AbstractGeocoderHandler class
 4. add the new class to the handlers array inside GeocoderChainService class or add the new handler using the method add handler, the handler must extend the AbstractGeocoderHandler class
+
+## How to run the test cases 
+
+``
+./vendor/bin/pest
+``
