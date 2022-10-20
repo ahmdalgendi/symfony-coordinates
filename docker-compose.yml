@@ -18,7 +18,7 @@ services:
         container_name: nt_coordinates_resolver_nginx
 
     mysql:
-        image: mysql:5.7
+        image: mariadb:10.5.8
         volumes:
             - ./docker/mysql/data:/var/lib/mysql:cached
         ports:

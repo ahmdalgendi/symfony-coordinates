@@ -21,6 +21,7 @@
         "symfony/yaml": "5.2.*"
     },
     "require-dev": {
+        "pestphp/pest": "^1.22",
         "symfony/maker-bundle": "^1.33"
     },
     "config": {
@@ -28,7 +29,11 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true,
+            "pestphp/pest-plugin": true
+        }
     },
     "autoload": {
         "psr-4": {
