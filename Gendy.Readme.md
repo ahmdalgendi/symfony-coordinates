@@ -34,3 +34,8 @@ I created a chain and a handler for each strategy then added the handlers in the
 ``
 ./vendor/bin/pest
 ``
+
+
+## Why I used the strategy pattern and did not implement the handlers directly ?
+
+- I noticed that you the current code created 2 methods one for hereMaps and another for GoogleMaps, so I thought that you might want to add more ways to geocode in the future, so I used the strategy pattern to make it easy to add more ways to geocode
