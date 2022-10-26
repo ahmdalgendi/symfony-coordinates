@@ -6,7 +6,6 @@ use App\Exceptions\InvalidGeocoderClass;
 use App\Factories\GeocoderFactory;
 use App\Repository\ResolvedAddressRepository;
 use App\Service\Geocoders\DatabaseGeocoder;
-use App\Service\Geocoders\Geocoder;
 use App\Service\Geocoders\GoogleMapsGeocoder;
 use App\Service\Geocoders\HereMapsGeoCoder;
 use App\ValueObject\Address;
