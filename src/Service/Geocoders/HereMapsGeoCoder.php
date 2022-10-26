@@ -1,43 +1,47 @@
 <?php
 
-namespace App\Service\Strategies;
+namespace App\Service\Geocoders;
 
+use App\Exceptions\InvalidHereMapHttpException;
+use App\Repository\ResolvedAddressRepository;
 use App\Responses\GeocoderResponses\HereMapsGeocoderResponseHandler;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 use GuzzleHttp\Client;
+use JsonException;
 use Throwable;
 
-class HereMapsGeoCoderStrategy implements GeocoderStrategyInterface
+class HereMapsGeoCoder implements CanGeocodeInterface
 {
 	const HTTPS_GEOCODE_SEARCH_HEREAPI_COM_V_1_GEOCODE = 'https://geocode.search.hereapi.com/v1/geocode';
+	private ResolvedAddressRepository $resolvedAddressRepository;
 
-	public function __construct()
+	public function __construct(ResolvedAddressRepository $resolvedAddressRepository)
 	{
+		$this->resolvedAddressRepository = $resolvedAddressRepository;
 	}
 
 	public function geocode(Address $address): ?Coordinates
 	{
-		$apiKey = $_ENV["HEREMAPS_GEOCODING_API_KEY"];
-
-		$params = $this->getParams($address, $apiKey);
+		$params = $this->getParams($address);
 
 		try {
 			$data = $this->getHereMapsResponse($params);
-		} catch (Throwable $e) {
+		} catch (InvalidHereMapHttpException|Throwable $e) {
+			#todo: log the exception cause
 			return null;
 		}
-
 		return HereMapsGeocoderResponseHandler::handleResponse($data);
 	}
 
 	/**
 	 * @param Address $address
-	 * @param $apiKey
 	 * @return array[]
 	 */
-	public function getParams(Address $address, $apiKey): array
+	public function getParams(Address $address): array
 	{
+		#todo: should be moved to a config file
+		$apiKey = $_ENV["HEREMAPS_GEOCODING_API_KEY"];
 		return [
 				'query' => [
 						'qq' => implode(';', ["country={$address->getCountry()}", "city={$address->getCity()}", "street={$address->getStreet()}",
@@ -50,8 +54,8 @@ class HereMapsGeoCoderStrategy implements GeocoderStrategyInterface
 	/**
 	 * @param array $params
 	 * @return mixed
-	 * @throws \GuzzleHttp\Exception\GuzzleException
-	 * @throws \JsonException
+	 * @throws InvalidHereMapHttpException
+	 * @throws JsonException
 	 */
 	public function getHereMapsResponse(array $params)
 	{
@@ -59,7 +63,6 @@ class HereMapsGeoCoderStrategy implements GeocoderStrategyInterface
 
 		$response = $client->get(self::HTTPS_GEOCODE_SEARCH_HEREAPI_COM_V_1_GEOCODE, $params);
 
-		$data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-		return $data;
+		return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 	}
 }

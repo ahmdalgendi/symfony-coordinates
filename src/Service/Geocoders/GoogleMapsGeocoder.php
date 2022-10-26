@@ -2,29 +2,36 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Strategies;
+namespace App\Service\Geocoders;
 
+use App\Exceptions\InvalidGoogleMapHttpException;
+use App\Repository\ResolvedAddressRepository;
 use App\Responses\GeocoderResponses\GoogleMapsGeocoderResponseHandler;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use Throwable;
 
-class GoogleMapsGeocoderStrategyStrategy implements GeocoderStrategyInterface
+class GoogleMapsGeocoder implements CanGeocodeInterface
 {
 	public const HTTPS_MAPS_GOOGLEAPIS_COM_MAPS_API_GEOCODE_JSON = 'https://maps.googleapis.com/maps/api/geocode/json';
+	private ResolvedAddressRepository $resolvedAddressRepository;
+
+	public function __construct(ResolvedAddressRepository $resolvedAddressRepository)
+	{
+		$this->resolvedAddressRepository = $resolvedAddressRepository;
+	}
 
 	public function geocode(Address $address): ?Coordinates
 	{
 		$params = $this->getParams($address);
 		try {
 			$data = $this->getGoogleGeocodeResponse($params);
-		} catch (Throwable $e) {
+		} catch (InvalidGoogleMapHttpException|Throwable $e) {
+			#todo: log the exception cause
 			return null;
 		}
-
 		return GoogleMapsGeocoderResponseHandler::handleResponse($data);
 	}
 
@@ -34,6 +41,7 @@ class GoogleMapsGeocoderStrategyStrategy implements GeocoderStrategyInterface
 	 */
 	public function getParams(Address $address): array
 	{
+		#todo: should be moved to a config file
 		$apiKey = $_ENV["GOOGLE_GEOCODING_API_KEY"];
 		return [
 				'query' => [
@@ -51,7 +59,7 @@ class GoogleMapsGeocoderStrategyStrategy implements GeocoderStrategyInterface
 	/**
 	 * @param array $params
 	 * @return mixed
-	 * @throws GuzzleException
+	 * @throws InvalidGoogleMapHttpException
 	 * @throws JsonException
 	 */
 	public function getGoogleGeocodeResponse(array $params)

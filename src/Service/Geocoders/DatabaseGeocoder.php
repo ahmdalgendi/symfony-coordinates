@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Strategies;
+namespace App\Service\Geocoders;
 
 use App\Repository\ResolvedAddressRepository;
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 
-class DatabaseGeocoderStrategyStrategy implements GeocoderStrategyInterface
+class DatabaseGeocoder implements CanGeocodeInterface
 {
 	private ResolvedAddressRepository $resolvedAddressRepository;
 	public function __construct(ResolvedAddressRepository $resolvedAddressRepository)

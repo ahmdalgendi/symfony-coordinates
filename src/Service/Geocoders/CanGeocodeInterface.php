@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Strategies;
+namespace App\Service\Geocoders;
 
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 
-interface GeocoderStrategyInterface
+interface CanGeocodeInterface
 {
     public function geocode(Address $address): ?Coordinates;
 }
