@@ -16,12 +16,6 @@ use Throwable;
 class GoogleMapsGeocoder implements CanGeocodeInterface
 {
 	public const HTTPS_MAPS_GOOGLEAPIS_COM_MAPS_API_GEOCODE_JSON = 'https://maps.googleapis.com/maps/api/geocode/json';
-	private ResolvedAddressRepository $resolvedAddressRepository;
-
-	public function __construct(ResolvedAddressRepository $resolvedAddressRepository)
-	{
-		$this->resolvedAddressRepository = $resolvedAddressRepository;
-	}
 
 	public function geocode(Address $address): ?Coordinates
 	{

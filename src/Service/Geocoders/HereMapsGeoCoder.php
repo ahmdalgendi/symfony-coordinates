@@ -14,13 +14,7 @@ use Throwable;
 class HereMapsGeoCoder implements CanGeocodeInterface
 {
 	const HTTPS_GEOCODE_SEARCH_HEREAPI_COM_V_1_GEOCODE = 'https://geocode.search.hereapi.com/v1/geocode';
-	private ResolvedAddressRepository $resolvedAddressRepository;
-
-	public function __construct(ResolvedAddressRepository $resolvedAddressRepository)
-	{
-		$this->resolvedAddressRepository = $resolvedAddressRepository;
-	}
-
+	
 	public function geocode(Address $address): ?Coordinates
 	{
 		$params = $this->getParams($address);
